@@ -1,5 +1,8 @@
 # ensure localscript and pem file in same directory, and script file is in git repo top level
+DEFAULT_REPO="https://github.com/bootstraplife/simple-node-js-react-npm-app.git"
+GIT_REPO=${1:-$DEFAULT_REPO}
 
+echo "Using repo $GIT_REPO"
 if echo $PATH | grep ~/bin; then
     echo "~/bin is already in path"
 else
@@ -70,10 +73,12 @@ sleep 10;
 
 aws ssm send-command \
     --document-name "AWS-RunShellScript" \
-    --parameters commands=["git clone https://github.com/bootstraplife/deploy-react-to-aws-scripts.git /home/ec2-user/deploy-react-to-aws-scripts && git clone https://github.com/bootstraplife/simple-node-js-react-npm-app.git /home/ec2-user/react-app"] \
+    --parameters commands=["git clone https://github.com/bootstraplife/deploy-react-to-aws-scripts.git /home/ec2-user/deploy-react-to-aws-scripts && git clone $GIT_REPO /home/ec2-user/react-app"] \
     --instance-ids $instance_id \
     --comment "cloning git repo" \
     --output text
+
+sleep 5;
 
 aws ssm send-command \
     --document-name "AWS-RunShellScript" \
@@ -98,5 +103,5 @@ echo "From within the instance, after the node packages have been installed you 
 echo "Run the command below to ssh into the instance."
 echo "ssh -i MyKeyPair.pem ec2-user@$ssh_address"
 
-echo "The website will be deployed to the below url as soon as it has finished building, this may take a minute"
+echo "The website will be deployed to the below url as soon as it has finished building, this may take up to 5 minutes"
 echo http://$ip_address:80
