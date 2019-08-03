@@ -66,7 +66,7 @@ aws ssm send-command \
     --document-name "AWS-RunShellScript" \
     --parameters commands=["sudo yum install git -y && sudo yum install -y docker"] \
     --instance-ids $instance_id \
-    --comment "installing git" \
+    --comment "installing git & docker" \
     --output text
 
 sleep 10;
@@ -75,16 +75,23 @@ aws ssm send-command \
     --document-name "AWS-RunShellScript" \
     --parameters commands=["git clone https://github.com/bootstraplife/deploy-react-to-aws-scripts.git /home/ec2-user/deploy-react-to-aws-scripts && git clone $GIT_REPO /home/ec2-user/react-app"] \
     --instance-ids $instance_id \
-    --comment "cloning git repo" \
+    --comment "cloning git repos" \
     --output text
 
 sleep 5;
 
 aws ssm send-command \
     --document-name "AWS-RunShellScript" \
+    --parameters commands=["sudo mv /home/ec2-user/deploy-react-to-aws-scripts/Dockerfile /home/ec2-user/react-app/Dockerfile"] \
+    --instance-ids $instance_id \
+    --comment "move dockerfile to project directory" \
+    --output text
+
+aws ssm send-command \
+    --document-name "AWS-RunShellScript" \
     --parameters commands=["sudo mv /home/ec2-user/deploy-react-to-aws-scripts/remotescript /home/ec2-user/react-app/remotescript && bash /home/ec2-user/react-app/remotescript"] \
     --instance-ids $instance_id \
-    --comment "cloning git repo" \
+    --comment "move remotescript file to project directory and run script" \
     --output text
 
 ip_address=$(aws ec2 describe-instances \
