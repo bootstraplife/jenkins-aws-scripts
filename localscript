@@ -70,14 +70,14 @@ sleep 10;
 
 aws ssm send-command \
     --document-name "AWS-RunShellScript" \
-    --parameters commands=["git clone https://github.com/bootstraplife/deploy-react-to-aws-scripts.git /home/ec2-user/deploy-react-to-aws-scripts && git clone https://github.com/bootstraplife/simple-node-js-react-npm-app.git /home/ec2-user/simple-node-js-react-npm-app"] \
+    --parameters commands=["git clone https://github.com/bootstraplife/deploy-react-to-aws-scripts.git /home/ec2-user/deploy-react-to-aws-scripts && git clone https://github.com/bootstraplife/simple-node-js-react-npm-app.git /home/ec2-user/react-app"] \
     --instance-ids $instance_id \
     --comment "cloning git repo" \
     --output text
 
 aws ssm send-command \
     --document-name "AWS-RunShellScript" \
-    --parameters commands=["sudo mv /home/ec2-user/deploy-react-to-aws-scripts/remotescript /home/ec2-user/simple-node-js-react-npm-app/remotescript && bash /home/ec2-user/simple-node-js-react-npm-app/remotescript"] \
+    --parameters commands=["sudo mv /home/ec2-user/deploy-react-to-aws-scripts/remotescript /home/ec2-user/react-app/remotescript && bash /home/ec2-user/react-app/remotescript"] \
     --instance-ids $instance_id \
     --comment "cloning git repo" \
     --output text
