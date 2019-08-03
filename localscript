@@ -77,7 +77,7 @@ aws ssm send-command \
 
 aws ssm send-command \
     --document-name "AWS-RunShellScript" \
-    --parameters commands=["mv /home/ec2-user/deploy-react-to-aws-scripts/remotescript /home/ec2-user/simple-node-js-react-npm-app/remotescript && bash /home/ec2-user/simple-node-js-react-npm-app/remotescript"] \
+    --parameters commands=["sudo mv /home/ec2-user/deploy-react-to-aws-scripts/remotescript /home/ec2-user/simple-node-js-react-npm-app/remotescript && bash /home/ec2-user/simple-node-js-react-npm-app/remotescript"] \
     --instance-ids $instance_id \
     --comment "cloning git repo" \
     --output text
