@@ -1,11 +1,12 @@
 pipeline {
     agent any
     triggers {
-        pollSCM 'H/1 * * * *'
+        pollSCM '* * * * *'
     }
     stages {
         stage('Git checkout') {
             steps {
+                
                 checkout([$class: 'GitSCM',
                     branches: [[name: 'master']],
                     userRemoteConfigs: [[name: 'origin',
