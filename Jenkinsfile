@@ -22,8 +22,8 @@ pipeline {
                 //     && tar xzvf docker-17.04.0-ce.tgz \
                 //     && mv docker/docker /usr/local/bin \
                 //     && rm -r docker docker-17.04.0-ce.tgz'
-                sh 'sudo docker build -t testimage .'
-                sh 'sudo docker run -p 80:80 testimage'
+                sh 'docker build -t testimage .'
+                sh 'docker run -p 80:80 testimage'
                 // script {
                 //     docker.build("testimage")
                 // }
