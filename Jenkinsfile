@@ -23,7 +23,7 @@ pipeline {
                 //     && rm -r docker docker-17.04.0-ce.tgz'
                 // sh 'sudo docker build -t testimage .'
                 // sh 'sudo docker run -p 80:80 testimage'
-                def customImage = docker.build("my-image:${env.BUILD_ID}")
+                docker.build("my-image:${env.BUILD_ID}")
             }
         }
     }
