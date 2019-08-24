@@ -4,9 +4,9 @@ This repo is if you want to automate the creation of a CICD pipeline on an AWS c
 
 The localscript is all you need in your local machine to run. It will create an EC2 AWS instance and pull the Docker Jenkins image, and run the image. The login is user:admin, pw:admin
 
-The Jenkinsfile needs to be placed in the top of the directory of your Git repo.
+The Jenkinsfile and Dockerfile in the directory addToGitRepo needs to be placed in the top of the directory of your Git repo.
 
-The Dockerfile will allow you to recreate the docker image used locally if you want to make any changes.
+The Dockerfile in the directory buildJenkinsImage will allow you to recreate the docker image used locally if you want to make any changes.
 
 
 If you don't have the AWS CLI installed yet then fyi below
