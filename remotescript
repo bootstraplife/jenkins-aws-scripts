@@ -1,9 +1,0 @@
-#!/bin/bash  
-sudo service docker start
-echo "Building build image"
-sudo docker build -t my-react-app /home/ec2-user/react-app
-sudo docker image prune -f --filter label=stage=builder
-echo "Build Complete, running app"
-sudo docker run -p 80:80 my-react-app
-echo "Cleaning up"
-sudo docker rm $(sudo docker ps -aq)

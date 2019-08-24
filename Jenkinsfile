@@ -4,21 +4,25 @@ pipeline {
         pollSCM '* * * * *'
     }
     stages {
-        stage('Git checkout') {
+        stage('Check if container is running') {
+            when {
+                expression {
+                    return sh (
+                        script: "docker inspect -f '{{.State.Running}}' deployment",
+                        returnStatus: true
+                    ) == 0
+                }
+            }
             steps {
-                
-                checkout([$class: 'GitSCM',
-                    branches: [[name: 'master']],
-                    userRemoteConfigs: [[name: 'origin',
-                                        url: 'https://github.com/bootstraplife/simple-node-js-react-npm-app.git']]
-                ])
+                sh 'docker rm -f deployment'
             }
         }
         stage('Build') {
             steps {
                 echo 'Building!'
-                sh 'docker build -t testimage .'
-                sh 'docker run -p 80:80 -d testimage'
+                sh 'docker build -t testimage --rm .'
+               // sh 'docker image prune -f'
+                sh 'docker run -p 80:80 -d --name deployment testimage'
             }
         }
     }

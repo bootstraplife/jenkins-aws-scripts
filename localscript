@@ -1,8 +1,5 @@
 # ensure localscript and pem file in same directory, and script file is in git repo top level
-DEFAULT_REPO="https://github.com/bootstraplife/simple-node-js-react-npm-app.git"
-GIT_REPO=${1:-$DEFAULT_REPO}
 
-echo "Using repo $GIT_REPO"
 if echo $PATH | grep ~/bin; then
     echo "~/bin is already in path"
 else
@@ -64,7 +61,7 @@ echo "Instance status is $status"
 
 aws ssm send-command \
     --document-name "AWS-RunShellScript" \
-    --parameters commands=["sudo yum install git -y && sudo yum install -y docker"] \
+    --parameters commands=["sudo yum install -y docker"] \
     --instance-ids $instance_id \
     --comment "installing git & docker" \
     --output text
@@ -73,25 +70,9 @@ sleep 10;
 
 aws ssm send-command \
     --document-name "AWS-RunShellScript" \
-    --parameters commands=["git clone https://github.com/bootstraplife/deploy-react-to-aws-scripts.git /home/ec2-user/deploy-react-to-aws-scripts && git clone $GIT_REPO /home/ec2-user/react-app"] \
+    --parameters commands=["sudo service docker start && sudo docker pull nantano/bootstrap:jenkins && sudo docker run -p 8080:8080 -v /var/run/docker.sock:/var/run/docker.sock -d nantano/bootstrap:jenkins"] \
     --instance-ids $instance_id \
-    --comment "cloning git repos" \
-    --output text
-
-sleep 5;
-
-aws ssm send-command \
-    --document-name "AWS-RunShellScript" \
-    --parameters commands=["sudo mv /home/ec2-user/deploy-react-to-aws-scripts/Dockerfile /home/ec2-user/react-app/Dockerfile"] \
-    --instance-ids $instance_id \
-    --comment "move dockerfile to project directory" \
-    --output text
-
-aws ssm send-command \
-    --document-name "AWS-RunShellScript" \
-    --parameters commands=["sudo mv /home/ec2-user/deploy-react-to-aws-scripts/remotescript /home/ec2-user/react-app/remotescript && bash /home/ec2-user/react-app/remotescript"] \
-    --instance-ids $instance_id \
-    --comment "move remotescript file to project directory and run script" \
+    --comment "pull and run jenkins docker image" \
     --output text
 
 ip_address=$(aws ec2 describe-instances \
@@ -106,9 +87,8 @@ ssh_address=$(aws ec2 describe-instances \
     --query 'Reservations[*].Instances[0].PublicDnsName' \
     )
 
-echo "From within the instance, after the node packages have been installed you can see the images/ containers being made as it builds the prod container"
 echo "Run the command below to ssh into the instance."
 echo "ssh -i MyKeyPair.pem ec2-user@$ssh_address"
 
-echo "The website will be deployed to the below url as soon as it has finished building, this may take up to 5 minutes"
-echo http://$ip_address:80
+echo "The jenkins client will be deployed to the below url as soon as it has finished building, this may take up to 5 minutes"
+echo http://$ip_address:8080
